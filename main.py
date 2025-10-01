@@ -30,7 +30,7 @@ def main(page: ft.Page):
     text = ft.Text(
         "", 
         size = 15, 
-        color="white",
+        color="black",
         overflow=ft.TextOverflow.ELLIPSIS,
         max_lines=3,
 
@@ -43,36 +43,40 @@ def main(page: ft.Page):
         height=120
             
         )
-   
-    container = ft.Stack(
-        controls=[
-            # Текст прижат к левому краю
-            ft.Container(
+    text_container = ft.Container(
                 border_radius=15,
                 content=text,
                 alignment=ft.alignment.center_right,
                 left = 10,
-                bgcolor=ft.Colors.BLACK26,
+                bgcolor=ft.Colors.WHITE,
                 padding=10,
-                width=300
-            ),
+                width=300,
+                opacity=0
+            )
+    container = ft.Stack(
+        controls=[
+            # Текст прижат к левому краю
+            text_container,
+            
             # Картинка прижата к правому краю
             ft.Container(
                 content=image,
                 alignment=ft.alignment.center_right,
                 right=10,
+                
             ),
         ],
         expand=True,
     )
     def Animation():
-        frame_time = 0.15
+        frame_time = 0.1
         nonlocal text
         
         while True:
             
             time.sleep(5)
             text.value = ''
+            text_container.opacity = 0
             page.update()
             for id in range(len(animation_frames)):
                 image.src = animation_frames[id]
@@ -92,16 +96,12 @@ def main(page: ft.Page):
                 'кастую автомат на сессию'
             ]
             index = random.randint(0, len(notes)-1)
+            text_container.opacity = 1
             text.value = notes[index]
-            page.update()
-            
-            
+            page.update()         
     page.add(
         
         container
     )
     Animation()
-    
-
-
 ft.app(target=main)
