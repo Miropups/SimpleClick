@@ -1,5 +1,6 @@
 import flet as ft
 import time
+import random
 
 def main(page: ft.Page):
     page.bgcolor = "transparent"
@@ -9,12 +10,12 @@ def main(page: ft.Page):
     page.window.always_on_top = True
     page.window.ignore_mouse_events = True
     
-    page.window.width = 500
+    page.window.width = 450
     page.window.height = 200
     page.padding = 0
     page.spacing=0
 
-    page.window.left = 720
+    page.window.left = 920
     page.window.top = 720
 
     animation_frames = [
@@ -26,11 +27,20 @@ def main(page: ft.Page):
         "animation/6.png",
     ]
     
-    text = ft.Text("1234235235ываыва ыва ыв а", size = 30, color="white")
+    text = ft.Text(
+        "", 
+        size = 15, 
+        color="white",
+        overflow=ft.TextOverflow.ELLIPSIS,
+        max_lines=3,
+
+        )
+    
     image = ft.Image(
-            src=animation_frames[0], #320x320
-            width=120,
-            height=120
+        src=animation_frames[0],
+         #320x320
+        width=120,
+        height=120
             
         )
    
@@ -38,9 +48,13 @@ def main(page: ft.Page):
         controls=[
             # Текст прижат к левому краю
             ft.Container(
+                border_radius=15,
                 content=text,
-                alignment=ft.alignment.center_left,
-                left=10,
+                alignment=ft.alignment.center_right,
+                left = 10,
+                bgcolor=ft.Colors.BLACK26,
+                padding=10,
+                width=300
             ),
             # Картинка прижата к правому краю
             ft.Container(
@@ -53,12 +67,16 @@ def main(page: ft.Page):
     )
     def Animation():
         frame_time = 0.15
-
+        nonlocal text
+        
         while True:
             
-            
+            time.sleep(5)
+            text.value = ''
+            page.update()
             for id in range(len(animation_frames)):
                 image.src = animation_frames[id]
+                
                 page.update()
                 time.sleep(frame_time)
             time.sleep(1)
@@ -66,7 +84,17 @@ def main(page: ft.Page):
                 image.src = animation_frames[id]
                 page.update()
                 time.sleep(frame_time)
-            time.sleep(5)
+            
+            notes = [
+                'а ты не плох',
+                'как же твой код хорош',
+                'МОЙ СОЗДАТЕЛЬ - ДУРАК, не учится нифига, фигней страдает',
+                'кастую автомат на сессию'
+            ]
+            index = random.randint(0, len(notes)-1)
+            text.value = notes[index]
+            page.update()
+            
             
     page.add(
         
