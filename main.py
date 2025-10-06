@@ -2,6 +2,14 @@ import flet as ft
 import time
 import random
 
+
+
+notes = []
+with open("NotesFile.txt", 'r') as file:
+    for line in file:
+        notes.append(line.strip())
+
+
 def main(page: ft.Page):
 
     page.fonts= {
@@ -18,8 +26,7 @@ def main(page: ft.Page):
     page.window.width = 450
     page.window.height = 200
 
-    page.window.max_width = 450
-    page.window.max_height = 200
+    
 
     page.padding = 0
     page.spacing=0
@@ -35,16 +42,16 @@ def main(page: ft.Page):
         "animation/5.png",
         "animation/6.png",
     ]
-    
+
+
+
     text = ft.Text(
         "", 
         size = 20, 
-        color="white",
+        color="black",
         overflow=ft.TextOverflow.ELLIPSIS,
         max_lines=3,
-        font_family="pixelFont"
-
-        )  
+        font_family="pixelFont"   )  
     image = ft.Image(
         src=animation_frames[0],
          #320x320
@@ -52,29 +59,29 @@ def main(page: ft.Page):
         height=120
             
         )
-
     text_background = ft.Container(
         margin=ft.margin.only(top=50),
         content=text,
-        bgcolor="#FFF1E8",
+        bgcolor="#FBF2BE",
         padding=5,
         border_radius=10,
-        opacity=0,
-        image = ft.DecorationImage(src="bg.png", repeat=ft.ImageRepeat.REPEAT)
-        #expand=True
+        opacity=0
+        
         
     )
-    
-    
-    
+    wrapper = ft.Row(
+        [text_background],
+        width = 300,  # ⬅️ ограничение максимальной ширины
+        wrap=True,  # разрешаем перенос строк в Row
+        alignment=ft.MainAxisAlignment.END
+    )
     image_container = ft.Container(
                 content=image,
                 alignment=ft.alignment.center_right,         
-            )
-            
+            )          
     container = ft.Row(
         controls=[
-            text_background,
+            wrapper,
             image_container   
         ],
         
@@ -85,6 +92,7 @@ def main(page: ft.Page):
     def Animation():
         frame_time = 0.1
         nonlocal text
+        global notes
         
         while True:
             
@@ -103,15 +111,7 @@ def main(page: ft.Page):
                 page.update()
                 time.sleep(frame_time)
             
-            notes = [
-                'Только слабый сдается',
-                "давай давай родной",
-                'ты сможешь',
-                'еще немного',
-                'ты будешь счастлив',
-                'я тоже устал',
-                'гавно только с сильными'
-            ]
+            
             index = random.randint(0, len(notes)-1)
             text_background.opacity = 1
             text.value = notes[index]
@@ -124,14 +124,34 @@ def main(page: ft.Page):
 
 
 def test(page:ft.Page):
-    text = ft.Text('123123', size= 30, color='black')
-    page.add(
-        ft.Container(
-        
-        content=text,
-        image = ft.DecorationImage(src="bg.png")
-         
+    page.title = "Адаптивная ширина текста"
+    page.horizontal_alignment = ft.MainAxisAlignment.CENTER
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+
+    # Сам "пузырёк" с текстом
+    text_box = ft.Container(
+        content=ft.Text(
+            "1.",
+            color=ft.Colors.WHITE,
+            no_wrap=False,    # разрешаем перенос строк
+            selectable=True,
+            max_lines=None,
+        ),
+        bgcolor=ft.Colors.BLUE_700,
+        padding=ft.padding.all(12),
+        border_radius=ft.border_radius.all(10),
+        margin=ft.margin.all(10),
+        expand=False,       # не растягиваем контейнер
     )
+
+    # Обёртка, которая задаёт максимум
+    wrapper = ft.Row(
+        [text_box],
+        alignment=ft.MainAxisAlignment.START,
+        width=400,  # ⬅️ ограничение максимальной ширины
+        wrap=True,  # разрешаем перенос строк в Row
     )
+
+    page.add(wrapper)
 
 ft.app(target=main)
